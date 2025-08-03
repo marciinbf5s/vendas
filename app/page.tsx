@@ -305,8 +305,6 @@ function EnhancedButton({
   className = "",
   variant = "default",
   size = "default",
-  onMouseEnter,
-  onMouseLeave,
   ...props
 }: {
   children: React.ReactNode
@@ -314,8 +312,6 @@ function EnhancedButton({
   className?: string
   variant?: "default" | "outline"
   size?: "default" | "lg"
-  onMouseEnter?: () => void
-  onMouseLeave?: () => void
 }) {
   const [isHovered, setIsHovered] = useState(false)
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number }>>([])
@@ -338,24 +334,14 @@ function EnhancedButton({
     setTimeout(() => setParticles([]), 1000)
   }
 
-  const handleMouseEnter = () => {
-    setIsHovered(true)
-    if (onMouseEnter) onMouseEnter()
-  }
-
-  const handleMouseLeave = () => {
-    setIsHovered(false)
-    if (onMouseLeave) onMouseLeave()
-  }
-
   return (
     <Button
       className={`relative overflow-hidden ${className}`}
       variant={variant}
       size={size}
       onClick={handleClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       {...props}
     >
       {children}
@@ -376,7 +362,7 @@ function EnhancedButton({
 
       {/* Shimmer effect */}
       <div
-        className={`absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 transition-opacity duration-500 pointer-events-none ${
+        className={`absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 transition-opacity duration-500 ${
           isHovered ? "opacity-20" : ""
         }`}
         style={{
@@ -467,7 +453,7 @@ function WhatsAppButton() {
       }`}
     >
       <div className="relative">
-        <Button
+        <EnhancedButton
           onClick={handleWhatsAppClick}
           className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl animate-bounce hover:animate-none transition-all duration-300 hover:scale-110 group relative overflow-hidden"
           size="lg"
@@ -478,40 +464,25 @@ function WhatsAppButton() {
 
           {/* Pulsing ring effect */}
           <div
-            className={`absolute inset-0 rounded-full border-2 border-green-400 transition-all duration-1000 pointer-events-none ${
+            className={`absolute inset-0 rounded-full border-2 border-green-400 transition-all duration-1000 ${
               isHovered ? "scale-150 opacity-0" : "scale-100 opacity-50"
             }`}
           />
           <div
-            className={`absolute inset-0 rounded-full border-2 border-green-300 transition-all duration-1000 delay-200 pointer-events-none ${
+            className={`absolute inset-0 rounded-full border-2 border-green-300 transition-all duration-1000 delay-200 ${
               isHovered ? "scale-200 opacity-0" : "scale-100 opacity-30"
             }`}
           />
 
           {/* Notification badge */}
-          <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center animate-pulse pointer-events-none">
+          <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
             1
           </div>
-
-          {/* Hover particles */}
-          {isHovered &&
-            [...Array(10)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-1 h-1 bg-white rounded-full animate-ping pointer-events-none"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 2}s`,
-                  animationDuration: `${1 + Math.random()}s`,
-                }}
-              />
-            ))}
-        </Button>
+        </EnhancedButton>
 
         {/* Tooltip */}
         <div
-          className={`absolute bottom-full right-0 mb-2 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-opacity duration-300 shadow-lg pointer-events-none ${
+          className={`absolute bottom-full right-0 mb-2 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-opacity duration-300 shadow-lg ${
             isHovered ? "opacity-100" : "opacity-0"
           }`}
         >
